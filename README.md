@@ -44,7 +44,14 @@ This app is written in React and uses Amplify, Amazon EC2, Amazon Cognito, Amazo
 4. Complete MicroServices setup
 
    1. Navigate to Platinum-Volunteers/EC2_scripts
-   2. 
+
+   2. Create Docker image for both sub-directories 
+
+      ```bash
+      docker build -t <img name> .
+      ```
+
+   3. [Push images to ECR](https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-push-ecr-image.html)
 
 5. Set up Amplify
 
