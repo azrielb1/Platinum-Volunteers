@@ -2,8 +2,11 @@
 
 Helper functions for the API
 
-
 */
+
+
+const endpoint = ''//enter your endpoint here
+
 
 // var request = require('request');
 var axios = require('axios');
@@ -28,7 +31,7 @@ lib.create = async function (table, dataObj) {
 
     var config = {
         method: 'post',
-        url: 'https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/events',
+        url: endpoint + 'events',
         headers: {
             'Authorization': 'Bearer vOTmyqFA9uAH8qshUe7vzt1SEtf3',
             'Content-Type': 'application/json'
@@ -65,7 +68,7 @@ lib.read = async function (table, id) {
 
     var config = {
         method: 'post',
-        url: 'https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/events',
+        url: endpoint + 'events',
         headers: {
             'Authorization': 'Bearer vOTmyqFA9uAH8qshUe7vzt1SEtf3',
             'Content-Type': 'application/json'
@@ -113,7 +116,7 @@ lib.update = async function (table, id, UpdateExpression, ExpressionAttributeVal
     var data = JSON.stringify(obj);
     var config = {
         method: 'post',
-        url: 'https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/events',
+        url: endpoint + 'events',
         headers: {
             'Authorization': 'Bearer vOTmyqFA9uAH8qshUe7vzt1SEtf3',
             'Content-Type': 'application/json'
@@ -147,7 +150,7 @@ lib.delete = async function (table, id) {
 
     var config = {
         method: 'post',
-        url: 'https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/events',
+        url: endpoint + 'events',
         headers: {
             'Authorization': 'Bearer vOTmyqFA9uAH8qshUe7vzt1SEtf3',
             'Content-Type': 'application/json'
@@ -190,7 +193,7 @@ lib.list = async function (table) {
 
     var config = {
         method: 'post',
-        url: 'https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/events',
+        url: endpoint + 'events',
         headers: {
             'Authorization': 'Bearer vOTmyqFA9uAH8qshUe7vzt1SEtf3',
             'Content-Type': 'application/json'
@@ -245,7 +248,7 @@ lib.getEventsAndUser = async function (userID) {
     };
 
     try {
-        const response = await fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/users", requestOptions);
+        const response = await fetch(endpoint + 'users', requestOptions);
         const result = await response.json();
         return result;
     } catch (error) {
@@ -299,7 +302,7 @@ lib.joinEvent = async function (userID, eventID) {
     };
 
     try {
-        const response = await fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/users", requestOptions);
+        const response = await fetch(endpoint + 'users', requestOptions);
         const result = await response.text();
         return result;
     } catch (error) {
@@ -338,7 +341,7 @@ lib.leaveEvent = async function (userID, eventID) {
     };
 
     try {
-        const response = await fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/users", requestOptions);
+        const response = await fetch(endpoint + 'users', requestOptions);
         const result = await response.text();
         return result;
     } catch (error) {
@@ -365,7 +368,7 @@ lib.getApprovedAndPublicEvents = async function () {
     };
 
     try {
-        const response = await fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/events", requestOptions);
+        const response = await fetch(endpoint + 'events', requestOptions);
         const result = await response.json();
         return result.events;
     } catch (error) {
@@ -392,7 +395,7 @@ lib.getNotApprovedEvents = async function () {
     };
 
     try {
-        const response = await fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/events", requestOptions);
+        const response = await fetch(endpoint + 'events', requestOptions);
         const result = await response.json();
         return result;
     } catch (error) {
@@ -422,7 +425,7 @@ lib.approveEvent = async function (eventID) {
     };
 
     try {
-        const response = await fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/events", requestOptions);
+        const response = await fetch(endpoint + 'events', requestOptions);
         const result = await response.text();
         return result;
     } catch (error) {
@@ -451,7 +454,7 @@ lib.getNamesFromIDs = async function (ids) {
     };
 
     try {
-        const response = await fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/users", requestOptions);
+        const response = await fetch(endpoint + 'users', requestOptions);
         const result = await response.json();
         return result;
     } catch (error) {
@@ -482,7 +485,7 @@ lib.setFeatured = async function (eventID) {
     };
 
     try {
-        const response = await fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/events", requestOptions);
+        const response = await fetch(endpoint + 'events', requestOptions);
         const result = await response.json();
         return result;
     } catch (error) {
@@ -512,7 +515,7 @@ lib.setNotFeatured = async function (eventID) {
     };
 
     try {
-        const response = await fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/events", requestOptions);
+        const response = await fetch(endpoint + 'events', requestOptions);
         const result = await response.json();
         return result;
     } catch (error) {
@@ -539,7 +542,7 @@ lib.getAllFeatured = async function () {
     };
 
     try {
-        const response = await fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/events", requestOptions);
+        const response = await fetch(endpoint + 'events', requestOptions);
         const result = await response.json();
         return result;
     } catch (error) {
@@ -560,7 +563,7 @@ lib.sendEmail = async function (toEmail, subject, body) {
 
     var config = {
         method: 'post',
-        url: 'https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/events',
+        url: endpoint + 'events',
         headers: {
             'Authorization': 'Bearer vOTmyqFA9uAH8qshUe7vzt1SEtf3',
             'Content-Type': 'application/json'

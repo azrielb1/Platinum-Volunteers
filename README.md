@@ -39,9 +39,12 @@ This app is written in React and uses Amplify, Amazon EC2, Amazon Cognito, Amazo
       2. Choose CRMLambda
       3. Choose "Add Trigger" 
       4. Select API Gateway and choose the CRMAPI
-   3. Add your endpoint URL to Platinum-Volunteers/src/APIFunctions.js
+   3. Add your endpoint URL to Platinum-Volunteers/src/APIFunctions.js as well as in Platinum-Volunteers/EC2_scripts/EventSuggesterMicroServ/APIHelperFunctions.js and Platinum-Volunteers/EC2_scripts/ProcessEventsMicroServ/APIHelperFunctions.js
 
 4. Complete MicroServices setup
+
+   1. Navigate to Platinum-Volunteers/EC2_scripts
+   2. 
 
 5. Set up Amplify
 
