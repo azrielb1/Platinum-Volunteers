@@ -33,6 +33,14 @@ This app is written in React and uses Amplify, Amazon EC2, Amazon Cognito, Amazo
    
 3. Complete API setup
 
+   1. [enable cors](https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-cors.html)
+   2. Add APIGateway as a trigger for the Lambda
+      1. Open AWS Console and go to Lambda
+      2. Choose CRMLambda
+      3. Choose "Add Trigger" 
+      4. Select API Gateway and choose the CRMAPI
+   3. Add your endpoint URL to Platinum-Volunteers/src/APIFunctions.js
+
 4. Complete MicroServices setup
 
 5. Set up Amplify
