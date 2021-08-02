@@ -1,0 +1,119 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+    
+  },
+  "Mappings": {
+    "AWSRegionToAMI": {
+      "us-east-1": {
+        "AMIID": "ami-09bee01cc997a78a6"
+      },
+      "us-east-2": {
+        "AMIID": "ami-0a9e12068cb98a01d"
+      },
+      "us-west-1": {
+        "AMIID": "ami-0fa6c8d131a220017"
+      },
+      "us-west-2": {
+        "AMIID": "ami-078c97cf1cefd1b38"
+      },
+      "eu-west-1": {
+        "AMIID": "ami-0c9ef930279337028"
+      },
+      "eu-central-1": {
+        "AMIID": "ami-065c1e34da68f2b02"
+      },
+      "ap-northeast-1": {
+        "AMIID": "ami-02265963d1614d04d"
+      },
+      "ap-southeast-1": {
+        "AMIID": "ami-0b68661b29b9e058c"
+      },
+      "ap-southeast-2": {
+        "AMIID": "ami-00e4b147599c13588"
+      }
+    }
+  },
+  "Resources": {
+    "ECSCluster": {
+      "Type": "AWS::ECS::Cluster",
+      "Properties": {
+        "ClusterName": "React-App-Microservice-cluster"
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "7df58bad-0307-4266-b3e5-101828f805b0"
+        }
+      }
+    },
+    "ProcessEventsRepo": {
+      "Type": "AWS::ECR::PublicRepository",
+      "Properties": {},
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "03695c64-0d50-4216-b237-c0f3fd418239"
+        }
+      }
+    },
+    "SuggestEventsRepo": {
+      "Type": "AWS::ECR::PublicRepository",
+      "Properties": {},
+      "Metadata": {
+        "AWS::CloudFormation::Designer": {
+          "id": "5dfb49af-ccd2-4e39-ae99-5c9e98a7657c"
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "ecscluster": {
+      "Value": {
+        "Ref": "ECSCluster"
+      }
+    }
+  },
+  "Metadata": {
+    "AWS::CloudFormation::Designer": {
+      "7df58bad-0307-4266-b3e5-101828f805b0": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": -100,
+          "y": 240
+        },
+        "z": 1,
+        "embeds": [],
+        "dependson": [
+          "03695c64-0d50-4216-b237-c0f3fd418239",
+          "5dfb49af-ccd2-4e39-ae99-5c9e98a7657c"
+        ]
+      },
+      "03695c64-0d50-4216-b237-c0f3fd418239": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": -200,
+          "y": 200
+        },
+        "z": 0,
+        "embeds": []
+      },
+      "5dfb49af-ccd2-4e39-ae99-5c9e98a7657c": {
+        "size": {
+          "width": 60,
+          "height": 60
+        },
+        "position": {
+          "x": -200,
+          "y": 290
+        },
+        "z": 0,
+        "embeds": []
+      }
+    }
+  }
+}

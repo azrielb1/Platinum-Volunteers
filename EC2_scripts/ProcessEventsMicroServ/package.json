@@ -1,0 +1,16 @@
+{
+  "name": "processeventsmicroserv",
+  "version": "1.0.0",
+  "description": "",
+  "main": "process_old_events.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "moment": "^2.29.1",
+    "nodemailer": "^6.6.3"
+  }
+}

@@ -1,0 +1,586 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Resources": {
+        "LambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Code": {
+                    "ZipFile": "console.log('Loading DynamoDB Lambda function');\nvar AWS = require('aws-sdk');\nvar dynamo = new AWS.DynamoDB.DocumentClient();\nexports.handler = function(event, context, callback) {\n//console.log('Received event:', JSON.stringify(event, null, 2));\nvar operation = event.operation;\nif (event.tableName) {\n  event.payload.TableName = event.tableName;\n}\nswitch (operation) {\n      case 'create':\n          dynamo.put(event.payload, callback);\n          break;\n      case 'read':\n          dynamo.get(event.payload, callback);\n          break;\n      case 'update':\n          dynamo.update(event.payload, callback);\n          break;\n      case 'delete':\n          dynamo.delete(event.payload, callback);\n          break;\n      case 'list':\n          dynamo.scan(event.payload, callback);\n          break;\n      default:\n          callback('Unknown operation: ${operation}');\n}\n};\n"
+                },
+                "FunctionName": {
+                    "Ref": "LambdaFuncName"
+                },
+                "Handler": "index.handler",
+                "Runtime": "nodejs12.x",
+                "Role": {
+                    "Fn::GetAtt": [
+                        "IAMRole",
+                        "Arn"
+                    ]
+                }
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "a559df6f-9edd-4b46-ba7a-34fb95eba56c"
+                }
+            }
+        },
+        "EventsTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+                "TableName": {
+                    "Ref": "EventsTableName"
+                },
+                "AttributeDefinitions": [{
+                    "AttributeName": "id",
+                    "AttributeType": "N"
+                }],
+                "KeySchema": [{
+                    "AttributeName": "id",
+                    "KeyType": "HASH"
+                }],
+                "ProvisionedThroughput": {
+                    "ReadCapacityUnits": "5",
+                    "WriteCapacityUnits": "5"
+                }
+            },
+            "DependsOn": [
+                "IAMRole"
+            ],
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "1af8b25f-5112-4a93-a461-29975f3c05df"
+                }
+            }
+        },
+        "RestApi": {
+            "Type": "AWS::ApiGateway::RestApi",
+            "Properties": {
+                "Name": {
+                    "Ref": "APIName"
+                }
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "7d62156c-684e-4199-95e4-3ada5992a375"
+                }
+            }
+        },
+        "UsersResource": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+                "RestApiId": {
+                    "Ref": "RestApi"
+                },
+                "ParentId": {
+                    "Fn::GetAtt": [
+                        "RestApi",
+                        "RootResourceId"
+                    ]
+                },
+                "PathPart": "users"
+            },
+            "DependsOn": [
+                "RestApi"
+            ],
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "82b4d9cd-c689-42f1-8474-54c4ba728b8c"
+                }
+            }
+        },
+        "EventsResource": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+                "RestApiId": {
+                    "Ref": "RestApi"
+                },
+                "ParentId": {
+                    "Fn::GetAtt": [
+                        "RestApi",
+                        "RootResourceId"
+                    ]
+                },
+                "PathPart": "events"
+            },
+            "DependsOn": [
+                "RestApi"
+            ],
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "82b4d9cd-c689-42f1-8474-54c4ba728b8c"
+                }
+            }
+        },
+        "RestApiDeployment": {
+            "Type": "AWS::ApiGateway::Deployment",
+            "Properties": {
+                "RestApiId": {
+                    "Ref": "RestApi"
+                },
+                "StageName": "dev"
+            },
+            "DependsOn": [
+                "UsersPOST", "EventsPOST"
+            ],
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "973f2e9a-d6f7-4287-8455-c5d73141b491"
+                }
+            }
+        },
+        "RestApiPermissions": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+                "Action": "lambda:InvokeFunction",
+                "FunctionName": {
+                    "Fn::GetAtt": [
+                        "LambdaFunction",
+                        "Arn"
+                    ]
+                },
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                    "Fn::Join": [
+                        "", [
+                            "arn:aws:execute-api:",
+                            {
+                                "Ref": "AWS::Region"
+                            },
+                            ":",
+                            {
+                                "Ref": "AWS::AccountId"
+                            },
+                            ":",
+                            {
+                                "Ref": "RestApi"
+                            },
+                            "/*"
+                        ]
+                    ]
+                }
+            },
+            "DependsOn": [
+                "RestApiDeployment"
+            ],
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "e9e6d3cd-f38a-4859-bb18-11b0fb75fa31"
+                }
+            }
+        },
+        "IAMRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [{
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Service": [
+                                "lambda.amazonaws.com"
+                            ]
+                        },
+                        "Action": [
+                            "sts:AssumeRole"
+                        ]
+                    }]
+                },
+                "Path": "/",
+                "Policies": [{
+                    "PolicyName": "Policy_api-lambda-db",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [{
+                                "Effect": "Allow",
+                                "Action": [
+                                    "dynamodb:BatchGetItem",
+                                    "dynamodb:BatchWriteItem",
+                                    "dynamodb:TagResource",
+                                    "dynamodb:UntagResource",
+                                    "dynamodb:PutItem",
+                                    "dynamodb:DeleteItem",
+                                    "dynamodb:GetItem",
+                                    "dynamodb:Scan",
+                                    "dynamodb:Query",
+                                    "dynamodb:UpdateItem"
+                                ],
+                                "Resource": "*"
+                            },
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "logs:CreateLogStream",
+                                    "logs:CreateLogGroup",
+                                    "logs:PutLogEvents"
+                                ],
+                                "Resource": "*"
+                            }
+                        ]
+                    }
+                }]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "e956449d-8100-4eca-9949-cde040b8e62b"
+                }
+            }
+        },
+        "UserPool": {
+            "Type": "AWS::Cognito::UserPool",
+            "Properties": {
+                "UserPoolName": "WebAppUserPool"
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "f9c9c2ed-295b-4cef-b5c9-c1f11747560b"
+                }
+            }
+        },
+        "AmplifyApp": {
+            "Type": "AWS::Amplify::App",
+            "Properties": {
+                "Name": "WebAppServer"
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "0b571ff1-75a4-4ec8-9a09-fa0709ea1a4b"
+                }
+            }
+        },
+        "UsersTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+                "TableName": {
+                    "Ref": "UsersTableName"
+                },
+                "AttributeDefinitions": [{
+                    "AttributeName": "id",
+                    "AttributeType": "N"
+                }],
+                "KeySchema": [{
+                    "AttributeName": "id",
+                    "KeyType": "HASH"
+                }],
+                "ProvisionedThroughput": {
+                    "ReadCapacityUnits": "5",
+                    "WriteCapacityUnits": "5"
+                }
+            },
+            "DependsOn": [
+                "IAMRole"
+            ],
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "d77d983a-9bde-4bee-8d88-d7273b3e1c31"
+                }
+            }
+        },
+        "UsersPOST": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+                "RestApiId": {
+                    "Ref": "RestApi"
+                },
+                "ResourceId": {
+                    "Ref": "UsersResource"
+                },
+                "HttpMethod": "POST",
+                "AuthorizationType": "NONE",
+                "MethodResponses": [{
+                    "StatusCode": 200
+                }],
+                "Integration": {
+                    "Type": "AWS",
+                    "IntegrationResponses": [{
+                        "StatusCode": 200
+                    }],
+                    "IntegrationHttpMethod": "POST",
+                    "Uri": {
+                        "Fn::Sub": [
+                            "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaFuncNameArn}/invocations",
+                            {
+                                "LambdaFuncNameArn": {
+                                    "Fn::GetAtt": [
+                                        "LambdaFunction",
+                                        "Arn"
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            "DependsOn": [
+                "RestApi"
+            ],
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "d50dc807-8889-4bd0-bbc4-b21a4c01cfb8"
+                }
+            }
+        },
+        "EventsPOST": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+                "RestApiId": {
+                    "Ref": "RestApi"
+                },
+                "ResourceId": {
+                    "Ref": "EventsResource"
+                },
+                "HttpMethod": "POST",
+                "AuthorizationType": "NONE",
+                "MethodResponses": [{
+                    "StatusCode": 200
+                }],
+                "Integration": {
+                    "Type": "AWS",
+                    "IntegrationResponses": [{
+                        "StatusCode": 200
+                    }],
+                    "IntegrationHttpMethod": "POST",
+                    "Uri": {
+                        "Fn::Sub": [
+                            "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaFuncNameArn}/invocations",
+                            {
+                                "LambdaFuncNameArn": {
+                                    "Fn::GetAtt": [
+                                        "LambdaFunction",
+                                        "Arn"
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "Parameters": {
+        "LambdaFuncName": {
+            "Type": "String",
+            "Default": "Lambda_api-lambda-db"
+        },
+        "UsersTableName": {
+            "Type": "String",
+            "Default": "Users_api-lambda-db"
+        },
+        "EventsTableName": {
+            "Type": "String",
+            "Default": "Events_api-lambda-db"
+        },
+        "APIName": {
+            "Type": "String",
+            "Default": "API_api-lambda-db"
+        },
+        "EnvironmentName": {
+            "Type": "String",
+            "Default": "Prod"
+        }
+    },
+    "Metadata": {
+        "AWS::CloudFormation::Designer": {
+            "e956449d-8100-4eca-9949-cde040b8e62b": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 280,
+                    "y": 440
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "1af8b25f-5112-4a93-a461-29975f3c05df": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 470,
+                    "y": 390
+                },
+                "z": 1,
+                "embeds": [],
+                "dependson": [
+                    "e956449d-8100-4eca-9949-cde040b8e62b"
+                ]
+            },
+            "a559df6f-9edd-4b46-ba7a-34fb95eba56c": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 270,
+                    "y": 360
+                },
+                "z": 1,
+                "embeds": [],
+                "dependson": [
+                    "1af8b25f-5112-4a93-a461-29975f3c05df",
+                    "d77d983a-9bde-4bee-8d88-d7273b3e1c31"
+                ]
+            },
+            "7d62156c-684e-4199-95e4-3ada5992a375": {
+                "size": {
+                    "width": 340,
+                    "height": 230
+                },
+                "position": {
+                    "x": 70,
+                    "y": 110
+                },
+                "z": 1,
+                "embeds": [
+                    "973f2e9a-d6f7-4287-8455-c5d73141b491",
+                    "82b4d9cd-c689-42f1-8474-54c4ba728b8c"
+                ],
+                "dependson": [
+                    "a559df6f-9edd-4b46-ba7a-34fb95eba56c"
+                ]
+            },
+            "82b4d9cd-c689-42f1-8474-54c4ba728b8c": {
+                "size": {
+                    "width": 180,
+                    "height": 160
+                },
+                "position": {
+                    "x": 110,
+                    "y": 160
+                },
+                "z": 2,
+                "parent": "7d62156c-684e-4199-95e4-3ada5992a375",
+                "embeds": [
+                    "d50dc807-8889-4bd0-bbc4-b21a4c01cfb8",
+                    "cc85fafb-696d-4470-9e97-1b36cce1083a"
+                ],
+                "dependson": [
+                    "7d62156c-684e-4199-95e4-3ada5992a375"
+                ]
+            },
+            "cc85fafb-696d-4470-9e97-1b36cce1083a": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 190,
+                    "y": 250
+                },
+                "z": 3,
+                "parent": "82b4d9cd-c689-42f1-8474-54c4ba728b8c",
+                "embeds": [],
+                "iscontainedinside": [
+                    "7d62156c-684e-4199-95e4-3ada5992a375"
+                ],
+                "dependson": [
+                    "82b4d9cd-c689-42f1-8474-54c4ba728b8c"
+                ]
+            },
+            "973f2e9a-d6f7-4287-8455-c5d73141b491": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 320,
+                    "y": 150
+                },
+                "z": 2,
+                "parent": "7d62156c-684e-4199-95e4-3ada5992a375",
+                "embeds": [],
+                "iscontainedinside": [
+                    "7d62156c-684e-4199-95e4-3ada5992a375",
+                    "7d62156c-684e-4199-95e4-3ada5992a375",
+                    "7d62156c-684e-4199-95e4-3ada5992a375",
+                    "7d62156c-684e-4199-95e4-3ada5992a375",
+                    "7d62156c-684e-4199-95e4-3ada5992a375",
+                    "7d62156c-684e-4199-95e4-3ada5992a375",
+                    "7d62156c-684e-4199-95e4-3ada5992a375",
+                    "7d62156c-684e-4199-95e4-3ada5992a375",
+                    "7d62156c-684e-4199-95e4-3ada5992a375",
+                    "7d62156c-684e-4199-95e4-3ada5992a375"
+                ],
+                "dependson": [
+                    "cc85fafb-696d-4470-9e97-1b36cce1083a"
+                ]
+            },
+            "e9e6d3cd-f38a-4859-bb18-11b0fb75fa31": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 470,
+                    "y": 300
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "a559df6f-9edd-4b46-ba7a-34fb95eba56c"
+                ],
+                "dependson": [
+                    "973f2e9a-d6f7-4287-8455-c5d73141b491"
+                ]
+            },
+            "f9c9c2ed-295b-4cef-b5c9-c1f11747560b": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 130,
+                    "y": 370
+                },
+                "z": 0,
+                "embeds": []
+            },
+            "0b571ff1-75a4-4ec8-9a09-fa0709ea1a4b": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 130,
+                    "y": 460
+                },
+                "z": 0,
+                "embeds": []
+            },
+            "d77d983a-9bde-4bee-8d88-d7273b3e1c31": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 470,
+                    "y": 480
+                },
+                "z": 0,
+                "embeds": []
+            },
+            "d50dc807-8889-4bd0-bbc4-b21a4c01cfb8": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 190,
+                    "y": 180
+                },
+                "z": 3,
+                "parent": "82b4d9cd-c689-42f1-8474-54c4ba728b8c",
+                "embeds": [],
+                "iscontainedinside": [
+                    "7d62156c-684e-4199-95e4-3ada5992a375"
+                ],
+                "dependson": [
+                    "82b4d9cd-c689-42f1-8474-54c4ba728b8c"
+                ]
+            }
+        }
+    }
+}
