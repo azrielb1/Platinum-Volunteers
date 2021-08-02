@@ -12,6 +12,7 @@ This app is written in React and uses Amplify, Amazon EC2, Amazon Cognito, Amazo
 + [AWS Account](https://aws.amazon.com/mobile/details/)
 + [AWS CLI](https://aws.amazon.com/cli/)
 + [NodeJS](https://nodejs.org/en/download/) with [NPM](https://docs.npmjs.com/getting-started/installing-node)
++ [Docker](https://www.docker.com/)
 
 ## Getting Started
 
@@ -30,5 +31,12 @@ This app is written in React and uses Amplify, Amazon EC2, Amazon Cognito, Amazo
    aws cloudformation create-stack --stack-name MicroServices --template-body file://./cloudformation/MicroServices/template.json
    ```
    
-3. 
+3. Complete API setup
 
+4. Complete MicroServices setup
+
+5. Set up Amplify
+
+6. SET UP .ENV
+
+7. 

@@ -2,11 +2,10 @@
 
 Helper functions for the API
 
-
 */
 
 let lib = {}
-
+const endpoint = //enter your endpoint here with trailing slash
 
 /*
 table is either "events" for the events table or "users" for users table
@@ -33,7 +32,7 @@ lib.create = async function (table, dataObj) {
     };
 
     try {
-        const response = await fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/" + table, requestOptions);
+        const response = await fetch(endpoint + table, requestOptions);
         const result = await response.text();
         return result;
     } catch (error) {
@@ -66,7 +65,7 @@ lib.read = async function (table, id) {
     };
 
     try {
-        const response = await fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/" + table, requestOptions);
+        const response = await fetch(endpoint + table, requestOptions);
         const result = await response.json();
         return result;
     } catch (error) {
@@ -99,7 +98,7 @@ lib.update = async function (table, id, UpdateExpression, ExpressionAttributeVal
     };
 
     try {
-        const response = await fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/" + table, requestOptions);
+        const response = await fetch(endpoint + table, requestOptions);
         const result = await response.text();
         return result;
     } catch (error) {
@@ -130,7 +129,7 @@ lib.delete = async function (table, id) {
     };
 
     try {
-        const response = await fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/" + table, requestOptions);
+        const response = await fetch(endpoint + table, requestOptions);
         const result = await response.text();
         return result;
     } catch (error) {
@@ -164,7 +163,7 @@ lib.list = async function (table) {
     };
 
     try {
-        const response = await fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/events" , requestOptions);
+        const response = await fetch(endpoint + 'events' , requestOptions);
         const result = await response.json();
         // console.log(result)
         return result;
@@ -208,7 +207,7 @@ lib.getEventsAndUser = async function (userID) {
     };
 
     try {
-        const response = await fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/users", requestOptions);
+        const response = await fetch(endpoint + 'users', requestOptions);
         const result = await response.json();
         return result;
     } catch (error) {
@@ -262,7 +261,7 @@ lib.joinEvent = async function (userID, eventID) {
     };
 
     try {
-        const response = await fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/users", requestOptions);
+        const response = await fetch(endpoint + 'users', requestOptions);
         const result = await response.text();
         return result;
     } catch (error) {
@@ -301,7 +300,7 @@ lib.leaveEvent = async function (userID, eventID) {
     };
 
     try {
-        const response = await fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/users", requestOptions);
+        const response = await fetch(endpoint + 'users', requestOptions);
         const result = await response.text();
         return result;
     } catch (error) {
@@ -328,7 +327,7 @@ lib.getApprovedAndPublicEvents = async function () {
     };
 
     try {
-        const response = await fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/events", requestOptions);
+        const response = await fetch(endpoint + 'events', requestOptions);
         const result = await response.json();
         return result.events;
     } catch (error) {
@@ -355,7 +354,7 @@ lib.getPastEvents = async function () {
     };
 
     try {
-        const response = await fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/events", requestOptions);
+        const response = await fetch(endpoint + 'events', requestOptions);
         const result = await response.json();
         return result.events;
     } catch (error) {
@@ -382,7 +381,7 @@ lib.getNotApprovedEvents = async function () {
     };
 
     try {
-        const response = await fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/events", requestOptions);
+        const response = await fetch(endpoint + 'events', requestOptions);
         const result = await response.json();
         return result;
     } catch (error) {
@@ -412,7 +411,7 @@ lib.approveEvent = async function (eventID) {
     };
 
     try {
-        const response = await fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/events", requestOptions);
+        const response = await fetch(endpoint + 'events', requestOptions);
         const result = await response.text();
         return result;
     } catch (error) {
@@ -441,7 +440,7 @@ lib.getNamesFromIDs = async function (ids) {
     };
 
     try {
-        const response = await fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/users", requestOptions);
+        const response = await fetch(endpoint + 'users', requestOptions);
         const result = await response.json();
         return result;
     } catch (error) {
@@ -472,7 +471,7 @@ lib.setFeatured = async function (eventID) {
     };
 
     try {
-        const response = await fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/events", requestOptions);
+        const response = await fetch(endpoint + 'events', requestOptions);
         const result = await response.json();
         return result;
     } catch (error) {
@@ -502,7 +501,7 @@ lib.setNotFeatured = async function (eventID) {
     };
 
     try {
-        const response = await fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/events", requestOptions);
+        const response = await fetch(endpoint + 'events', requestOptions);
         const result = await response.json();
         return result;
     } catch (error) {
@@ -529,7 +528,7 @@ lib.getAllFeatured = async function () {
     };
 
     try {
-        const response = await fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/events", requestOptions);
+        const response = await fetch(endpoint + 'events', requestOptions);
         const result = await response.json();
         return result;
     } catch (error) {
@@ -560,7 +559,7 @@ lib.sendEmail = async function (toEmail, subject, body) {
         redirect: 'follow'
     };
 
-    fetch("https://540mdzfzne.execute-api.us-east-1.amazonaws.com/dev/events", requestOptions)
+    fetch(endpoint + 'events', requestOptions)
         .then(response => response.text())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
