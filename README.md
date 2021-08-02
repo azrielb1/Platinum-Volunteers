@@ -11,6 +11,7 @@ This app is written in React and uses Amplify, Amazon EC2, Amazon Cognito, Amazo
 ## Prerequisites
 + [AWS Account](https://aws.amazon.com/mobile/details/)
 + [AWS CLI](https://aws.amazon.com/cli/)
++ [AWS Ampify CLI](https://docs.amplify.aws/cli/start/install)
 + [NodeJS](https://nodejs.org/en/download/) with [NPM](https://docs.npmjs.com/getting-started/installing-node)
 + [Docker](https://www.docker.com/)
 
@@ -43,17 +44,55 @@ This app is written in React and uses Amplify, Amazon EC2, Amazon Cognito, Amazo
 
 4. Complete MicroServices setup
 
-   1. Navigate to Platinum-Volunteers/EC2_scripts
-
-   2. Create Docker image for both sub-directories 
+   1. Create Docker image for both sub-directories 
 
       ```bash
-      docker build -t <img name> .
+      cd ProcessEventsMicroServ
+      docker build -t process_old_events .
+      cd ../EventSuggesterMicroServ
+      docker build -t Event_Suggester .
+      cd ..
       ```
 
-   3. [Push images to ECR](https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-push-ecr-image.html)
+   2. [Push images to ECR](https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-push-ecr-image.html)
+
+   3. Schedule task with ECS
+
+      1. Go to [AWS ECS console](https://console.aws.amazon.com/ecs)
+      2. Create new task definition
+      3. Use the images you pushed to ECR
+      4. [Schedule task](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/scheduling_tasks.html) to run every 6 hours on the cluster created by cloud formation
 
 5. Set up Amplify
+
+   1. Initialize the amplify project. 
+
+      ```
+      amplify init
+      ```
+
+   2. Configure an Amazon Cognito User Pool to manage user credentials.
+
+      ```
+      amplify add auth
+      ```
+
+   3. Configure an Amazon S3 bucket to store avatars.
+
+      ```
+      amplify add storage
+      ```
+
+   4. Deploy your project.
+
+      ```
+      amplify push
+      
+      # When asked if you would like to generate client code, you can
+      # say no since we are using plain JavaScript.
+      ```
+
+      
 
 6. SET UP .ENV
 
