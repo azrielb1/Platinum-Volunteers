@@ -73,7 +73,7 @@ This app is written in React and uses Amplify, Amazon EC2, Amazon Cognito, Amazo
 
    2. Configure an Amazon Cognito User Pool to manage user credentials.
 
-      ```
+      ```bash
       amplify add auth
       
       # When asked how you why do users to sign in choose "Email"
@@ -81,13 +81,13 @@ This app is written in React and uses Amplify, Amazon EC2, Amazon Cognito, Amazo
 
    3. Configure an Amazon S3 bucket to store avatars.
 
-      ```
+      ```bash
       amplify add storage
       ```
 
    4. Deploy your backend.
 
-      ```
+      ```bash
       amplify push
       
       # When asked if you would like to generate client code, you can
@@ -100,5 +100,17 @@ This app is written in React and uses Amplify, Amazon EC2, Amazon Cognito, Amazo
 
    1. obtain a [open weather API key](https://openweathermap.org/api) and [Google Maps API key](https://developers.google.com/maps/documentation/javascript/get-api-key)
    2. enter them in the .env file
+
+7. Install dependencies
+
+   ```bash
+   npm i
+   ```
+
+8. Run the app
+
+   ```bash
+   npm start
+   ```
 
    
