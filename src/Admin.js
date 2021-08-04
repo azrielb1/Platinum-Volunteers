@@ -13,6 +13,7 @@ const Admin = function (props) {
 
     async function getPendingEvents() {
         let data = await APIFuncs.getNotApprovedEvents();
+        console.log(data)
         setPendingEventsState(data["events"]);
         setLoadingOne(false);
         return data;

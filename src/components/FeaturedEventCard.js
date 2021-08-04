@@ -4,6 +4,7 @@ import { Storage } from 'aws-amplify';
 import DisplayCard from './DisplayCard'
 import GoogleMap from './GoogleMap'
 import APIFuncs from '../APIFunctions'
+import PaymentExample from './Payment';
 
 
 export function FeaturedEventCard(props) {
@@ -81,8 +82,8 @@ export function FeaturedEventCard(props) {
                 <h1 style={{ textAlign: 'center', margin: '0px 0px 0px 0px' }}>{props.header}</h1>
                 <h3 style={{ textAlign: 'center', margin: '0px 0px 0px 0px', color: 'grey' }}>{props.date}</h3>
             </Modal.Header>
+            
             <Modal.Content>
-
                 <h3 style={{ marginBottom: '1px' }}>Description:</h3>
                 <p>{props.description}</p>
 
@@ -98,6 +99,8 @@ export function FeaturedEventCard(props) {
                 <h3 style={{ marginBottom: '1px' }}>Amount Raised So far:</h3>
                 <p>{props.amountRaisedSoFar}</p>
                 
+
+                <PaymentExample amountRaisedSoFar={props.amountRaisedSoFar} amount={props.moneyRaisingGoal} eventName={props.header} ></PaymentExample>
 
                 <h3 style={{ marginBottom: '1px' }}>Location:</h3>
                 <p>{props.location}</p>

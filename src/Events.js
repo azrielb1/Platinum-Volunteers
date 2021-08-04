@@ -97,7 +97,7 @@ export default function Events(props) {
 
 
             <div className="ui four doubling cards" id="event-container" style={{ marginLeft: '7%', marginRight: '7%', paddingTop: '1.5em' }}>
-                {showPastEvents ? pastEvents.map((e) => <EventCard key={e.id} user={props.user} userData={props.userData} getUserData={props.getUserData} header={e.title} pic={pic} description={e.description} organizer={e.creator} organizerEmail={e.creatorEmail} date={e.date} information={e.information} participants={e.participants} location={e.location} tags={e.tags} />) : eventsState.map((e) => <EventCard user={props.user} userData={props.userData} getUserData={props.getUserData} header={e.title} pic={pic} description={e.description} organizer={e.creator} organizerEmail={e.creatorEmail} date={e.date} information={e.information} participants={e.participants} location={e.location} tags={e.tags} />)}
+                {showPastEvents ? pastEvents.map((e) => <EventCard key={e.id} user={props.user} userData={props.userData} getUserData={props.getUserData} header={e.title} pic={pic} description={e.description} organizer={e.creator} organizerEmail={e.creatorEmail} date={e.date} information={e.information} participants={e.participants} location={e.location} tags={e.tags} />) : eventsState.map((e) => <EventCard user={props.user} userData={props.userData} getUserData={props.getUserData} header={e.title} pic={pic} description={e.description} organizer={e.creator} organizerEmail={e.creatorEmail} date={e.date} information={e.information} participants={e.participants} location={e.location} tags={e.tags} suggestedDonation ={e.suggestedDonation} moneyRaisingGoal ={e.moneyRaisingGoal} amountRaisedSoFar ={e.amountRaisedSoFar}/>)}
             </div>
         </Container>
     )

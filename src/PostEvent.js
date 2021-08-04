@@ -61,13 +61,20 @@ export function PostEvent(props) {
             let eventid = 0;
             for (let i = 0; i < name.length; i++) { eventid += (5 * name.charCodeAt(i)) }
 
+            let cleanedTags;
+            if(tags.length > 1) {
+                cleanedTags = tags.split(",").concat(Array.from(tagState))
+            } else {
+                cleanedTags = Array.from(tagState)
+            }
+
             let res = await APIFuncs.create("events", {
                 id: eventid,
                 title: name,
                 description: description,
                 date: date,
                 location: location,
-                tags: tags.split(",").concat(Array.from(tagState)),
+                tags: cleanedTags,
                 information: information,
                 moneyRaisingGoal: moneyRaisingGoal,
                 suggestedDonation: suggestedDonation,

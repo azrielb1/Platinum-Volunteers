@@ -176,10 +176,6 @@ export function SignUpModal(props) {
             <Modal.Actions>
                 <Button basic onClick={() => setOpen(false)}>Already have an account? Log In</Button>
                 
-                <Button color = 'blue' onClick={() => {
-                    Auth.federatedSignIn({provider: 'Facebook'})
-                }}>Sign in with Facebook</Button>
-                
                 
                 <Button color='black' onClick={() => setOpen(false)}>
                     Cancel

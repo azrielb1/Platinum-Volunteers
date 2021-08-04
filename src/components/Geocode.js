@@ -4,7 +4,14 @@ import Geocode from "react-geocode";
 var lib = {}
 lib.getGeoCode = async function (address) {
     Geocode.setApiKey("AIzaSyDkuBax-kaENrHZ4UMglkXD1C7xgwxogO8");
-    let result = await Geocode.fromAddress(address)
+    let result;
+    try {
+        result = await Geocode.fromAddress(address)
+    } catch(err) {
+        result = await Geocode.fromAddress("Empire State Building")
+       
+    }
+    
     //.then(
     //(response) => {
     const { lat, lng } = result.results[0].geometry.location;
