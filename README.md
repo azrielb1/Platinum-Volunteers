@@ -23,16 +23,19 @@ This app is written in React and uses Amplify, Amazon EC2, Amazon Cognito, Amazo
    git clone https://github.com/azrielb1/Platinum-Volunteers.git
    ```
 
-2. Run cloudformation templates
+2. Run cloudformation templates. 
+
+The first template creates the API Gateway, the Lambda function, and the three dynamoDBs that are used to manage the data of the application. Furthermore, it creates an IAM role to allow the Lambda function to read, write, update, and delete items in the tables.
 
    ```bash
    aws cloudformation create-stack --stack-name API-Lambda-DB --template-body file://./cloudformation/API-Lambda-DB/template.json --parameters ParameterKey=LambdaFuncName,ParameterValue=CRMLambda ParameterKey=UsersTableName,ParameterValue=CRMUsersTable ParameterKey=APIName,ParameterValue=CRMAPI ParameterKey=EnvironmentName,ParameterValue=Prod --capabilities CAPABILITY_IAM
    ```
+The second template creates the infratructure for the two microservices. It creates two public Elastic Container Registries to store the Docker containers of the microservices. Furthermore, it creates a Elastic Container Service cluster to run the microservices.
    ```bash
    aws cloudformation create-stack --stack-name MicroServices --template-body file://./cloudformation/MicroServices/template.json
    ```
-   
-3. Complete API setup
+
+3. Complete API setup. To complete the configuration of the API Gateway, you must enable CORS to allow the API to return data to the requester. Additionally, the API Gateway must be added as a trigger to the lambda function, and the API invoke URL must be inserted into the frontend.
 
    1. [enable cors](https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-cors.html)
    2. Add APIGateway as a trigger for the Lambda
@@ -42,7 +45,7 @@ This app is written in React and uses Amplify, Amazon EC2, Amazon Cognito, Amazo
       4. Select API Gateway and choose the CRMAPI
    3. Add your endpoint URL to Platinum-Volunteers/src/APIFunctions.js as well as in Platinum-Volunteers/EC2_scripts/EventSuggesterMicroServ/APIHelperFunctions.js and Platinum-Volunteers/EC2_scripts/ProcessEventsMicroServ/APIHelperFunctions.js
 
-4. Complete MicroServices setup
+4. Complete Microservices setup. The first microservice looks through the events in the event database, removes events that have past, and adds them to the old events database. Furthermore, it send email reminders to the participants of immanent events. The second microservice recalculates and stores event suggestions for all the users.
 
    1. Create Docker image for both sub-directories 
 
@@ -63,11 +66,11 @@ This app is written in React and uses Amplify, Amazon EC2, Amazon Cognito, Amazo
       3. Use the images you pushed to ECR
       4. [Schedule task](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/scheduling_tasks.html) to run every 6 hours on the cluster created by cloud formation
 
-5. Set up Amplify
+5. Set up Amplify backend with AWS Cognito for user authentication, and S3 for avatar storage.
 
    1. Initialize the amplify project. 
 
-      ```
+      ```bash
       amplify init
       ```
 
@@ -81,7 +84,7 @@ This app is written in React and uses Amplify, Amazon EC2, Amazon Cognito, Amazo
 
    3. Configure an Amazon S3 bucket to store avatars.
 
-      ```bash
+      ```
       amplify add storage
       ```
 
@@ -96,7 +99,7 @@ This app is written in React and uses Amplify, Amazon EC2, Amazon Cognito, Amazo
 
    5. Go to the AWS Amplify console to set up the front end.
 
-6. SET UP .ENV
+6. Set up the .ENV file with API keys to enable various 3rd party integrations.
 
    1. obtain a [open weather API key](https://openweathermap.org/api) and [Google Maps API key](https://developers.google.com/maps/documentation/javascript/get-api-key)
    2. enter them in the .env file
@@ -112,5 +115,3 @@ This app is written in React and uses Amplify, Amazon EC2, Amazon Cognito, Amazo
    ```bash
    npm start
    ```
-
-   
