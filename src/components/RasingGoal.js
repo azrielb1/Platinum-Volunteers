@@ -1,13 +1,12 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import PaymentExample2 from './PaymentExample2'
+import PaymentButtonAndDatabase from './PaymentButtonAndDatabase'
 
 
-export default function NameForm(props) {
+export default function AmountForm(props) {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [donation, setDonation] = React.useState(0)
   function onSubmit(data) {
-    console.log(data.donation)
     setDonation(parseInt(data.donation))
   }
 
@@ -26,7 +25,7 @@ export default function NameForm(props) {
       )}
 
       <input type="submit" />
-      <PaymentExample2 amountDonatedSoFar={props.amountRaisedSoFar} currentdonation={donation} name={props.name}></PaymentExample2>
+      <PaymentButtonAndDatabase amountDonatedSoFar={props.amountRaisedSoFar} currentdonation={donation} name={props.name}></PaymentButtonAndDatabase>
     </form>
 
   );

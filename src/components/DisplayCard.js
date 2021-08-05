@@ -4,7 +4,6 @@ const maxDescriptionLength = 125
 export default class DisplayCard extends Component {
 
     render() {
-        //console.log(PaymentExample)
         let description = this.props.description + '';
         const displayDescription = description.slice(0, maxDescriptionLength) + (description.length > maxDescriptionLength ? "..." : "")
 

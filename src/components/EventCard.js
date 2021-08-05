@@ -5,7 +5,7 @@ import DisplayCard from './DisplayCard'
 import GoogleMap from './GoogleMap'
 import APIFuncs from '../APIFunctions'
 import Weather from './Weather'
-import PaymentExample from './Payment';
+import Payment from './Payment';
 import QRCode from 'qrcode.react'
 import QrReader from 'react-qr-scanner'
 
@@ -100,7 +100,8 @@ export function EventCard(props) {
     setModalActionsState(1)
   }
 
-  const date = new Date(props.date);
+  const splitDate = props.date.split(/[^0-9]/);
+  const date = new Date(splitDate[0], splitDate[1] - 1, splitDate[2], splitDate[3] ? splitDate[3] : 0, splitDate[4] ? splitDate[4] : 0, splitDate[5] ? splitDate[5] : 0);
   const dateOptions = {
     weekday: 'long',
     year: 'numeric',
@@ -134,7 +135,7 @@ export function EventCard(props) {
       <h3 style={{ marginBottom: '1px' }}>Amount Raised So far:</h3>
       <p>{props.amountRaisedSoFar}</p>
 
-      <PaymentExample amountRaisedSoFar={props.amountRaisedSoFar} amount={props.moneyRaisingGoal} eventName={props.header} ></PaymentExample>
+      <Payment amountRaisedSoFar={props.amountRaisedSoFar} amount={props.moneyRaisingGoal} eventName={props.header} ></Payment>
     </>
   )
 
@@ -142,6 +143,7 @@ export function EventCard(props) {
   if (modalContentState === 0) {
     modalContent = <div> <h3 style={{ marginBottom: '1px' }}>Description:</h3>
       <p>{props.description}</p>
+
 
       <h3 style={{ marginBottom: '1px' }}>Additional Information:</h3>
       <p>{props.information}</p>

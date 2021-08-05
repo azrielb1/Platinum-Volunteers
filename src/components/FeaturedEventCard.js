@@ -4,7 +4,7 @@ import { Storage } from 'aws-amplify';
 import DisplayCard from './DisplayCard'
 import GoogleMap from './GoogleMap'
 import APIFuncs from '../APIFunctions'
-import PaymentExample from './Payment';
+import Payment from './Payment';
 
 
 export function FeaturedEventCard(props) {
@@ -100,7 +100,7 @@ export function FeaturedEventCard(props) {
                 <p>{props.amountRaisedSoFar}</p>
                 
 
-                <PaymentExample amountRaisedSoFar={props.amountRaisedSoFar} amount={props.moneyRaisingGoal} eventName={props.header} ></PaymentExample>
+                <Payment amountRaisedSoFar={props.amountRaisedSoFar} amount={props.moneyRaisingGoal} eventName={props.header} ></Payment>
 
                 <h3 style={{ marginBottom: '1px' }}>Location:</h3>
                 <p>{props.location}</p>
